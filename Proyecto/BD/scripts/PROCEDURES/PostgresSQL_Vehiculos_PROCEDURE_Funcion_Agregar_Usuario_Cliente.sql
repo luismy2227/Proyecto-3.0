@@ -20,8 +20,8 @@
 
 		IN pc_rtn VARCHAR(45),
 
-		OUT pcMensaje VARCHAR(45),
-		OUT pbOcurreError BOOLEAN
+		OUT pcMensajeCliente VARCHAR(45),
+		OUT pbOcurreErrorCliente BOOLEAN
 	)
 	RETURNS RECORD AS
 	$BODY$
@@ -31,10 +31,12 @@
 			auxiliarUsuario INTEGER DEFAULT 0;
 			auxiliarCliente INTEGER DEFAULT 0;
 			auxiliarPersona INTEGER DEFAULT 0;
-
+			vb_ocurreErrorPersona BOOLEAN;
+			vc_mensajePersona VARCHAR(2000);
+			vb_ocurreErrorUsuario BOOLEAN;
+			vc_mensajeUsuario VARCHAR(2000);
 		BEGIN
-			START TRANSACTION;
-			pbOcurreError:=TRUE;
+			pbOcurreErrorCliente:=TRUE;
 			temMensaje := '';
 
 			--Comprobando que el rtn  no sea null:
@@ -42,27 +44,9 @@
 				RAISE NOTICE 'El rtn no  puede ser un campo vacío';
 				temMensaje := CONCAT(temMensaje, 'rtn, ');
 			END IF;
-			
-			--Comprobando que el nombre de usuario  no sea null:
-			IF pc_nombreUsuario = '' OR pc_nombreUsuario IS NULL THEN
-				RAISE NOTICE 'El nombre de usuario no  puede ser un campo vacío';
-				temMensaje := CONCAT(temMensaje, 'nombre de usuario, ');
-			END IF;
-
-			--Comprobando que la contraseña de usuario  no sea null:
-			IF pc_userPassword = '' OR pc_userPassword IS NULL THEN
-				RAISE NOTICE 'La contraseña no  puede ser un campo vacío';
-				temMensaje := CONCAT(temMensaje, 'contraseña, ');
-			END IF;
-
-			--Comprobando que la ruta de imagen de usuario  no sea null:
-			IF pc_userPassword = '' OR pc_userPassword IS NULL THEN
-				RAISE NOTICE 'La ruta de imagen no  puede ser un campo vacío';
-				temMensaje := CONCAT(temMensaje, 'ruta de imagen, ');
-			END IF;
 
 			IF temMensaje<>'' THEN
-				pcMensaje := CONCAT('Campos requeridos para poder realizar la matrícula:',temMensaje);
+				pcMensajeCliente := CONCAT('Campos requeridos para poder realizar la matrícula:',temMensaje);
 				RETURN;
 			END IF;
 
@@ -70,27 +54,29 @@
 			SELECT COUNT(*) INTO contador FROM tbl_Cliente WHERE  tbl_Cliente.rtn = pc_rtn;
 	 		IF contador > 0 THEN
 				RAISE NOTICE 'Valor unico en la tabla Cliente ya existe ( % )', pc_rtn;
-				pcMensaje := 'El rtn "'|| pc_rtn ||'" ya existe';
-				RETURN;
-			END IF;
-
-			--Comprobando que el nombre de usuario no se duplique
-			SELECT COUNT(*) INTO contador FROM tbl_Usuario WHERE  tbl_Cliente.nombreUsuario = pc_nombreUsuario;
-	 		IF contador > 0 THEN
-				RAISE NOTICE 'Valor unico en la tabla Cliente ya existe ( % )', pc_nombreUsuario;
-				pcMensaje := 'El nombre de usario "'|| pc_nombreUsuario ||'" ya existe';
+				pcMensajeCliente := 'El rtn "'|| pc_rtn ||'" ya existe';
 				RETURN;
 			END IF;
 
 			-- Utilizando el procedimiento Funcion_Agregar_Persona:
-			SELECT Funcion_Agregar_Persona(pc_identidad, pc_primerNombre, pc_segundoNombre, pc_primerApellido, pc_segundoApellido, 
+			SELECT pbOcurreError INTO vb_ocurreErrorPersona 
+			FROM Funcion_Agregar_Persona(pc_identidad, pc_primerNombre, pc_segundoNombre, pc_primerApellido, pc_segundoApellido, 
 			pc_telefono, pc_correoElectronico, pc_departamento, pc_municipio, pc_colonia, pc_sector, pc_numeroCasa,pn_genero);
 
-			-- Insetando:
-			-- Insertando usuario
-			SELECT COUNT(*) INTO auxiliarUsuario FROM tbl_Usuario; -- Obtener el id de usuario
-			INSERT INTO tbl_Usuario (idUsuario, nombreUsuario, userPassword, imagenRuta)
-			VALUES (auxiliarUsuario+1, pc_nombreUsuario,pc_userPassword, pc_imagenRuta);
+			-- Verificando que el proceso Agregar Persona haya sido exitoso
+			IF vb_ocurreErrorPersona = TRUE THEN
+				pcMensajeCliente := vc_mensajePersona;
+				RETURN;
+			END IF;
+			
+			SELECT pbOcurreError INTO vb_ocurreErrorUsuario 
+			FROM Funcion_Agregar_Usuario(pc_nombreUsuario, pc_userPassword,pc_imagenRuta);
+
+			-- Verificando que el proceso Agregar Usuario haya sido exitoso
+			IF vb_ocurreErrorUsuario = TRUE THEN
+				pcMensajeCliente := vc_mensajeUsuario;
+				RETURN;
+			END IF;
 
 			-- Insertando cliente
 			SELECT COUNT(*) INTO auxiliarCliente FROM tbl_Cliente; -- Obtener el id de cliente
@@ -98,8 +84,8 @@
 			INSERT INTO tbl_Cliente (idCliente, rtn, idPersona, idUsuario)
 			VALUES (auxiliarCliente+1, pc_rtn, auxiliarPersona, auxiliarUsuario+1);
 
-			pcMensaje := 'Usuario cliente insertado con éxito';
-			pbOcurreError := FALSE;
+			pcMensajeCliente := 'Usuario cliente insertado con éxito';
+			pbOcurreErrorCliente := FALSE;
 			COMMIT;
 			RETURN;
 		END;
