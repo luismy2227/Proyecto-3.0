@@ -81,8 +81,11 @@
 			-- Insertando cliente
 			SELECT COUNT(*) INTO auxiliarCliente FROM tbl_Cliente; -- Obtener el id de cliente
 			SELECT idPersona INTO auxiliarPersona FROM tbl_Persona WHERE tbl_Persona.identidad = pc_identidad; -- Obtener el id de Persona
+			SELECT idUsuario INTO auxiliarUsuario FROM tbl_Usuario WHERE tbl_Usuario.nombreUsuario = pc_nombreUsuario; -- Obtener el id de Usuario
+			
+
 			INSERT INTO tbl_Cliente (idCliente, rtn, idPersona, idUsuario)
-			VALUES (auxiliarCliente+1, pc_rtn, auxiliarPersona, auxiliarUsuario+1);
+			VALUES (auxiliarCliente+1, pc_rtn, auxiliarPersona, auxiliarUsuario);
 
 			pcMensajeCliente := 'Usuario cliente insertado con éxito';
 			pbOcurreErrorCliente := FALSE;
