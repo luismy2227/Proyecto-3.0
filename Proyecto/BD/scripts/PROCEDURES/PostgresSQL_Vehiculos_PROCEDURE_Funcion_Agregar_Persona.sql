@@ -1,30 +1,30 @@
 /*Procedimiento Agragar Persona*/
 	CREATE OR REPLACE FUNCTION Funcion_Agregar_Persona(
-		IN pc_identidad VARCHAR(45),
-		IN pc_primerNombre VARCHAR(45),
-		IN pc_segundoNombre VARCHAR(45), 
-		IN pc_primerApellido VARCHAR(45), 
-		IN pc_segundoApellido VARCHAR(45),
-		IN pc_telefono VARCHAR(45),
+		IN pc_identidad 		VARCHAR(45),
+		IN pc_primerNombre 		VARCHAR(45),
+		IN pc_segundoNombre 	VARCHAR(45), 
+		IN pc_primerApellido 	VARCHAR(45), 
+		IN pc_segundoApellido 	VARCHAR(45),
+		IN pc_telefono 			VARCHAR(45),
 		IN pc_correoElectronico VARCHAR(45),
-		IN pc_departamento VARCHAR(45),
-		IN pc_municipio VARCHAR(45),
-		IN pc_colonia VARCHAR(45),
-		IN pc_sector VARCHAR(45),
-		IN pc_numeroCasa VARCHAR(45),
-		IN pn_genero INTEGER,
-		OUT pcMensaje VARCHAR(45),
-		OUT pbOcurreError BOOLEAN
+		IN pc_departamento 		VARCHAR(45),
+		IN pc_municipio 		VARCHAR(45),
+		IN pc_colonia 			VARCHAR(45),
+		IN pc_sector 			VARCHAR(45),
+		IN pc_numeroCasa 		VARCHAR(45),
+		IN pn_genero 			INTEGER,
+		OUT pcMensaje 			VARCHAR(45),
+		OUT pbOcurreError 		BOOLEAN
 	)
 	RETURNS RECORD AS
 	$BODY$
 		DECLARE
-			contador INTEGER DEFAULT 0;
-			auxiliarDireccion INTEGER DEFAULT 0;
-			auxiliarPersona INTEGER DEFAULT 0;
-			auxiliarTelefono INTEGER DEFAULT 0;
-			auxiliarCorreo INTEGER DEFAULT 0;
-			temMensaje VARCHAR(2000);
+			contador 			INTEGER DEFAULT 0;
+			auxiliarDireccion 	INTEGER DEFAULT 0;
+			auxiliarPersona 	INTEGER DEFAULT 0;
+			auxiliarTelefono 	INTEGER DEFAULT 0;
+			auxiliarCorreo 		INTEGER DEFAULT 0;
+			temMensaje 			VARCHAR(2000);
 
 		BEGIN
 			pbOcurreError:=TRUE;

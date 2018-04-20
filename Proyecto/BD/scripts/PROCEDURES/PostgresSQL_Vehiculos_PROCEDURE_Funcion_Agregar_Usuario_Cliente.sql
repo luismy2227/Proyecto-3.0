@@ -26,15 +26,15 @@
 	RETURNS RECORD AS
 	$BODY$
 		DECLARE
-			contador INTEGER DEFAULT 0;
-			temMensaje VARCHAR(2000);
-			auxiliarUsuario INTEGER DEFAULT 0;
-			auxiliarCliente INTEGER DEFAULT 0;
-			auxiliarPersona INTEGER DEFAULT 0;
-			vb_ocurreErrorPersona BOOLEAN;
-			vc_mensajePersona VARCHAR(2000);
-			vb_ocurreErrorUsuario BOOLEAN;
-			vc_mensajeUsuario VARCHAR(2000);
+			contador 				INTEGER DEFAULT 0;
+			temMensaje 				VARCHAR(2000);
+			auxiliarUsuario 		INTEGER DEFAULT 0;
+			auxiliarCliente 		INTEGER DEFAULT 0;
+			auxiliarPersona 		INTEGER DEFAULT 0;
+			vb_ocurreErrorPersona 	BOOLEAN;
+			vc_mensajePersona 		VARCHAR(2000);
+			vb_ocurreErrorUsuario 	BOOLEAN;
+			vc_mensajeUsuario 		VARCHAR(2000);
 		BEGIN
 			pbOcurreErrorCliente:=TRUE;
 			temMensaje := '';
