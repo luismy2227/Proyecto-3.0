@@ -1,7 +1,7 @@
 /*Procedimiento Agegar vehículo*/
 	CREATE OR REPLACE FUNCTION Funcion_Agregar_Vehiculo(
 		IN pc_color				VARCHAR(45),
-		IN pc_placa				VARCHAR(6),
+		IN pc_placa				VARCHAR(8),
 		IN pc_anio				DATE,
 		IN pc_generacion		VARCHAR(45),
 		IN pc_serie_vin			VARCHAR(45),
@@ -126,11 +126,17 @@
 			idTransmision, idTipoGasolina, idGarage, idCilindraje, idModelo, idVersion)
 			VALUES(auxiliarVehiculo+1, pc_color, pc_placa, pc_anio,pc_generacion, pc_serie_vin, pn_tipoMotor, pn_idMarca, 
 			pn_idTransmision, pn_idTipoGasolina, pn_idGarage, pn_idCilindraje, pn_idModelo, pn_idVersion);
+
 			pcMensaje := 'Vehiculo insertado con éxito';
 			pbOcurreError := FALSE;
-			COMMIT;
+			--COMMIT;
 			RETURN;
 		END;
 	$BODY$
 	LANGUAGE plpgsql VOLATILE
 	COST 100;
+
+/*
+Probando la función:
+	SELECT Funcion_Agregar_Vehiculo('verde', 's5f7s5','2017-02-02','tercera generacion', 'a5as7sf4a54g5sg7s5g',1800,1,1,1,1,1,1,1);
+*/

@@ -1,26 +1,26 @@
-/*Procedimiento Agragar Persona*/
+/*Procedimiento Agragar Usuario Cliente*/
 	CREATE OR REPLACE FUNCTION Funcion_Agregar_Usuario_Cliente(
-		IN pc_identidad VARCHAR(45),
-		IN pc_primerNombre VARCHAR(45),
-		IN pc_segundoNombre VARCHAR(45), 
-		IN pc_primerApellido VARCHAR(45), 
-		IN pc_segundoApellido VARCHAR(45),
-		IN pc_telefono VARCHAR(45),
+		IN pc_identidad 		VARCHAR(45),
+		IN pc_primerNombre 		VARCHAR(45),
+		IN pc_segundoNombre 	VARCHAR(45), 
+		IN pc_primerApellido 	VARCHAR(45), 
+		IN pc_segundoApellido 	VARCHAR(45),
+		IN pc_telefono 			VARCHAR(45),
 		IN pc_correoElectronico VARCHAR(45),
-		IN pc_departamento VARCHAR(45),
-		IN pc_municipio VARCHAR(45),
-		IN pc_colonia VARCHAR(45),
-		IN pc_sector VARCHAR(45),
-		IN pc_numeroCasa VARCHAR(45),
-		IN pn_genero INTEGER,
+		IN pc_departamento 		VARCHAR(45),
+		IN pc_municipio 		VARCHAR(45),
+		IN pc_colonia 			VARCHAR(45),
+		IN pc_sector 			VARCHAR(45),
+		IN pc_numeroCasa 		VARCHAR(45),
+		IN pn_genero 			INTEGER,
 
-		IN pc_nombreUsuario VARCHAR(45),
-		IN pc_userPassword VARCHAR(45),
-		IN pc_imagenRuta VARCHAR(45),
+		IN pc_nombreUsuario 	VARCHAR(45),
+		IN pc_userPassword  	VARCHAR(45),
+		IN pc_imagenRuta 		VARCHAR(45),
 
-		IN pc_rtn VARCHAR(45),
+		IN pc_rtn 				VARCHAR(45),
 
-		OUT pcMensajeCliente VARCHAR(45),
+		OUT pcMensajeCliente 	VARCHAR(45),
 		OUT pbOcurreErrorCliente BOOLEAN
 	)
 	RETURNS RECORD AS
@@ -59,7 +59,7 @@
 			END IF;
 
 			-- Utilizando el procedimiento Funcion_Agregar_Persona:
-			SELECT pbOcurreError INTO vb_ocurreErrorPersona 
+			SELECT pbOcurreError, pcMensaje INTO vb_ocurreErrorPersona, vc_mensajePersona 
 			FROM Funcion_Agregar_Persona(pc_identidad, pc_primerNombre, pc_segundoNombre, pc_primerApellido, pc_segundoApellido, 
 			pc_telefono, pc_correoElectronico, pc_departamento, pc_municipio, pc_colonia, pc_sector, pc_numeroCasa,pn_genero);
 
@@ -69,7 +69,7 @@
 				RETURN;
 			END IF;
 			
-			SELECT pbOcurreError INTO vb_ocurreErrorUsuario 
+			SELECT pbOcurreError, pcMensaje INTO vb_ocurreErrorUsuario, vc_mensajeUsuario 
 			FROM Funcion_Agregar_Usuario(pc_nombreUsuario, pc_userPassword,pc_imagenRuta);
 
 			-- Verificando que el proceso Agregar Usuario haya sido exitoso
@@ -79,7 +79,7 @@
 			END IF;
 
 			-- Insertando cliente
-			SELECT COUNT(*) INTO auxiliarCliente FROM tbl_Cliente; -- Obtener el id de cliente
+			SELECT MAX(idCliente) INTO auxiliarCliente FROM tbl_Cliente; -- Obtener el id de cliente
 			SELECT idPersona INTO auxiliarPersona FROM tbl_Persona WHERE tbl_Persona.identidad = pc_identidad; -- Obtener el id de Persona
 			SELECT idUsuario INTO auxiliarUsuario FROM tbl_Usuario WHERE tbl_Usuario.nombreUsuario = pc_nombreUsuario; -- Obtener el id de Usuario
 			
@@ -89,7 +89,7 @@
 
 			pcMensajeCliente := 'Usuario cliente insertado con éxito';
 			pbOcurreErrorCliente := FALSE;
-			COMMIT;
+			--COMMIT;
 			RETURN;
 		END;
 	$BODY$
@@ -97,6 +97,6 @@
 	COST 100;
 
 /*Prueba de la función:
-	SELECT Funcion_Agregar_Persona('0801199707679', 'Marcos', 'Miguel', 'Andino', 'Andrade', 
-	'96068545', 'luismy2227@gmail.com', 'Francisco Morazán', 'DC', 'Centro América', 'Sector 2', 'Casa 4',2);
+	SELECT * FROM Funcion_Agregar_Usuario_Cliente( '02154985344633', 'Fernando', 'Carlos', 'Contreras', 'Valladares',
+'gsg12aa', 'adg14aaa1@asdf', 'FM', 'DC', 'Kenedy', 'sector uno', 'casa 4', 2, 'fercar', 'fercar', 'rutaFer', '4342');
 */

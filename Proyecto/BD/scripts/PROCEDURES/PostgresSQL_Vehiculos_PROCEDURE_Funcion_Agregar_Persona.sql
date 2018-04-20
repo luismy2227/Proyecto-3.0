@@ -99,7 +99,7 @@
 			SELECT COUNT(*) INTO contador FROM tbl_Persona WHERE  tbl_Persona.identidad = pc_identidad;
 	 		IF contador > 0 THEN
 				RAISE NOTICE 'Valor unico en la tabla Persona ya existe ( % )', pc_identidad;
-				pcMensaje := 'El numero de telefono "'|| pc_identidad ||'" ya esta siendo utilizado';
+				pcMensaje := 'La identidad "'|| pc_identidad ||'" ya esta siendo utilizado';
 				RETURN;
 			END IF;
 
@@ -120,28 +120,28 @@
 			END IF;
 			
 			--Insertando la direccion:
-			SELECT COUNT(*) INTO auxiliarDireccion FROM tbl_Direccion; --Obtener el idDireccion
+			SELECT MAX(idDireccion) INTO auxiliarDireccion FROM tbl_Direccion; --Obtener el idDireccion
 			INSERT INTO tbl_Direccion(idDireccion, departamento, municipio, colonia, sector, numeroCasa)
 			VALUES(auxiliarDireccion+1, pc_departamento, pc_municipio, pc_colonia, pc_sector, pc_numeroCasa);
 			
 			--Insertando persona:
-			SELECT COUNT(*) INTO auxiliarPersona FROM tbl_Persona; --Obtener el idPersona 
+			SELECT MAX(idPersona) INTO auxiliarPersona FROM tbl_Persona; --Obtener el idPersona 
 			INSERT INTO tbl_Persona(idPersona, identidad, primerNombre, segundoNombre, primerApellido, segundoApellido, idDireccion, idGenero)
 			VALUES(auxiliarPersona+1,pc_identidad,pc_primerNombre,pc_segundoNombre,pc_primerApellido,pc_segundoApellido, auxiliarDireccion+1, pn_genero);
 			
 			--Insertando telefono:
-			SELECT COUNT(*) INTO auxiliarTelefono FROM tbl_Telefono; --Obtener el idTelefono
+			SELECT MAX(idTelefono) INTO auxiliarTelefono FROM tbl_Telefono; --Obtener el idTelefono
 			INSERT INTO tbl_Telefono(idTelefono, telefono, idPersona)
 			VALUES(auxiliarTelefono+1, pc_telefono, auxiliarPersona+1);
 			
 			--Insertando correo:
-			SELECT COUNT(*) INTO auxiliarCorreo FROM tbl_CorreoElectronico; --Obtener el idCorreo
+			SELECT MAX(idCorreoElectronico) INTO auxiliarCorreo FROM tbl_CorreoElectronico; --Obtener el idCorreo
 			INSERT INTO tbl_CorreoElectronico(idCorreoElectronico, correoElectronico, idPersona)
 			VALUES(auxiliarCorreo+1, pc_correoElectronico, auxiliarPersona+1);
 			
 			pcMensaje := 'Persona insertada con éxito';
 			pbOcurreError := FALSE;
-			COMMIT;
+			--COMMIT;
 			RETURN;
 		END;
 	$BODY$
