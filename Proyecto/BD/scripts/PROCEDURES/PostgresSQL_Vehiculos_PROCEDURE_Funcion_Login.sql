@@ -2,7 +2,7 @@
 	CREATE OR REPLACE FUNCTION Funcion_Login(
 		IN pc_usuario VARCHAR(45),
 		IN pc_userPassword VARCHAR(45),
-		OUT pcMensaje VARCHAR(45),
+		OUT pcMensaje VARCHAR(2000),
 		OUT pbOcurreError BOOLEAN
 	)
 	RETURNS RECORD AS
